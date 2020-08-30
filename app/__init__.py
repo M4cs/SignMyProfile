@@ -63,7 +63,8 @@ def card(target):
         if u.signature_count == 1:
             api = api.replace('%20Person%20Has', '%20People%20Have')
         res = requests.get(api.format(amt=u.signature_count)).content
-        return res, 200
+        r = Response(res, mimetype="image/svg+xml")
+        return r, 200
     else:
         return 404
 
