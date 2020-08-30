@@ -116,18 +116,21 @@ def sign(target):
         if user:
             tar = User.objects(gh_id=target).first()
             if tar:
-                sig = Signatures.objects(target=tar.id, signee=user.id).first()
-                if not sig:
-                    new_sig = {
-                        'target': tar.id,
-                        'signee': user.id,
-                        'time': time.time()
-                    }
-                    sign = Signatures(**new_sig)
-                    if sign.save():
-                        user.signature_count += 1
-                        user.save()
-                        return redirect('https://github.com/' + tar.username, 302)
+                if not tar == user:
+                    sig = Signatures.objects(target=tar.id, signee=user.id).first()
+                    if not sig:
+                        new_sig = {
+                            'target': tar.id,
+                            'signee': user.id,
+                            'time': time.time()
+                        }
+                        sign = Signatures(**new_sig)
+                        if sign.save():
+                            user.signature_count += 1
+                            user.save()
+                            return redirect('https://github.com/' + tar.username, 302)
+                else:
+                    return redirect('https://github.com/' + tar.username)
         return redirect('https://smp.maxbridgland.com/')
     else:
         return redirect('https://smp.maxbridgland.com/loginandsign/' + target, 302)
