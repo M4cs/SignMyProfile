@@ -170,7 +170,7 @@ def index():
                     temp += TEMPLATE.format(username=u.username, display_name=u.display_name, user_image=u.avatar_url, time=st+" EST") + "<br>"
                 temp2 = ''
                 sigs2 = Signatures.objects(signee=user.id).all()
-                for sig in sigs:
+                for sig in sigs2:
                     st = datetime.fromtimestamp(sig.time).strftime("%Y-%m-%d %H:%M")
                     dt = datetime.strptime(st, "%Y-%m-%d %H:%M")
                     dt_utc = dt.replace(tzinfo=pytz.timezone('America/New_York'))
