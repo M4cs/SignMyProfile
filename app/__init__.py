@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, make_response, Response, redirect, render_template
 from flask_mongoengine import MongoEngine
+from jinja2 import Markup
 import requests
 import json
 from datetime import datetime
@@ -86,8 +87,8 @@ def callback():
     if not user:
         new_user_obj = {
             'gh_id': gh_id,
-            'username': user_obj['login'],
-            'display_name': user_obj['name'],
+            'username': Markup.escape(user_obj['login']),
+            'display_name': Markup.escape(user_obj['name']),
             'avatar_url': user_obj['avatar_url'],
             'github_oauth': at
         }
@@ -118,7 +119,7 @@ def sign(target):
         if user:
             tar = User.objects(gh_id=target).first()
             if tar:
-                if not tar == user:
+                if tar != user:
                     sig = Signatures.objects(target=tar.id, signee=user.id).first()
                     if not sig:
                         new_sig = {
@@ -127,10 +128,10 @@ def sign(target):
                             'time': time.time()
                         }
                         sign = Signatures(**new_sig)
-                        if sign.save():
-                            user.signature_count += 1
-                            user.save()
-                            return redirect('https://github.com/' + tar.username, 302)
+                        sign.save()
+                        user.signature_count += 1
+                        user.save()
+                        return redirect('https://github.com/' + tar.username, 302)
                 else:
                     return redirect('https://github.com/' + tar.username)
         return redirect('https://smp.maxbridgland.com/')
@@ -169,7 +170,7 @@ def index():
                     dt_utc = dt.replace(tzinfo=pytz.timezone('America/New_York'))
                     st = dt_utc.strftime("%Y-%m-%d %H:%M")
                     u = User.objects(id=sig.signee).first()
-                    temp += TEMPLATE.format(username=u.username, display_name=u.display_name, user_image=u.avatar_url, time=st+" EST") + "<br>"
+                    temp += TEMPLATE.format(username=Markup(u.username), display_name=Markup(u.display_name), user_image=u.avatar_url, time=st+" EST") + "<br>"
                 temp2 = ''
                 sigs2 = Signatures.objects(signee=user.id).all()
                 for sig in sigs2:
@@ -178,7 +179,7 @@ def index():
                     dt_utc = dt.replace(tzinfo=pytz.timezone('America/New_York'))
                     st = dt_utc.strftime("%Y-%m-%d %H:%M")
                     u = User.objects(id=sig.target).first()
-                    temp2 += TEMPLATE.format(username=u.username, display_name=u.display_name, user_image=u.avatar_url, time=st+" EST") + "<br>"
+                    temp2 += TEMPLATE.format(username=Markup(u.username), display_name=Markup(u.display_name), user_image=u.avatar_url, time=st+" EST") + "<br>"
                 badge = "https://img.shields.io/badge/Signed%20By-{amnt}%20People-red"
                 if user.signature_count == 1:
                     badge = badge.replace('People', 'Person')
