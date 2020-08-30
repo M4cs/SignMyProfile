@@ -96,7 +96,7 @@ def callback():
                 res.set_cookie('loginandsigntarget', '', 0)
                 return res
             res = make_response(redirect('https://smp.maxbridgland.com/'))
-            res.set_cookie('auth_token', new_user.github_oauth)
+            res.set_cookie('auth_token', new_user.github_oauth, 3600)
             return res
     else:
         res = make_response(redirect('https://smp.maxbridgland.com/'))
