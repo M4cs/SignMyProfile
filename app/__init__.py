@@ -60,7 +60,7 @@ def badge(amt):
         api = 'https://img.shields.io/badge/Sign%20My%20Profile-{}%20Person%20Has-red'.format(amt)
     else:
         api = 'https://img.shields.io/badge/Sign%20My%20Profile-{}%20People%20Have-red'.format(amt)
-    return redirect(api, 302), 200
+    return redirect(api)
 @app.route('/card/<target>')
 def card(target):
     from app.models import User
