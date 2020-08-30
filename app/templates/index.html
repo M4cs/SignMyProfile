@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SignMyProfile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+</head>
+
+<body style="overflow: auto;">
+    <section class="hero is-medium is-dark is-bold">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <h1 class="title">
+                    Paste this in your profile's README to Have People Sign It!
+                </h1>
+                <div class="container">
+                    <input readonly
+                        value="![https://smp.maxbridgland.com/card/{{gh_id}}](https://smp.maxbridgland.com/sign/{{gh_id}})"
+                        class="input has-text-centered" style="width: 60%; color: grey" id="#mdstuff">
+                </div>
+                <br>
+                <img src="{{badge}}"/>
+                <h2 class="subtitle">
+                    See who has signed your profile below!
+                </h2>
+            </div>
+            <br>
+            <div class="container has-text-centered" style="width: 20%">
+                {{ template | safe }}
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="content has-text-centered">
+
+            <p class="subtitle">SignMyProfile does not collect any data from you and only uses your GitHub account to reduce bots/verify you! Created by <a href="https://github.com/M4cs">Max Bridgland</a></p>
+        </div>
+    </footer>
+</body>
+
+</html>
