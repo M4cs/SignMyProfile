@@ -92,17 +92,17 @@ def callback():
         new_user = User(**new_user_obj)
         if new_user.save():
             if request.cookies.get('loginandsigntarget'):
-                res = make_response(redirect('https://smp.maxbridgland/sign/' + request.cookies.get('loginandsigntarget')))
+                res = make_response(redirect('https://smp.maxbridgland.com/sign/' + request.cookies.get('loginandsigntarget')))
                 res.set_cookie('loginandsigntarget', '', 0)
                 return res
-            res = make_response(redirect('https://smp.maxbridgland/'))
+            res = make_response(redirect('https://smp.maxbridgland.com/'))
             res.set_cookie('auth_token', new_user.github_oauth)
             return res
     else:
-        res = make_response(redirect('https://smp.maxbridgland/'))
+        res = make_response(redirect('https://smp.maxbridgland.com/'))
         res.set_cookie('auth_token', user.github_oauth, 3600)
         if request.cookies.get('loginandsigntarget'):
-                res = make_response(redirect('https://smp.maxbridgland/sign/' + request.cookies.get('loginandsigntarget')))
+                res = make_response(redirect('https://smp.maxbridgland.com/sign/' + request.cookies.get('loginandsigntarget')))
                 res.set_cookie('auth_token', user.github_oauth, 3600)
                 res.set_cookie('loginandsigntarget', '', 0)
                 return res
@@ -128,14 +128,14 @@ def sign(target):
                         user.signature_count += 1
                         user.save()
                         return redirect('https://github.com/' + tar.username)
-        return redirect('https://smp.maxbridgland/')
+        return redirect('https://smp.maxbridgland.com/')
     else:
-        return redirect('https://smp.maxbridgland/loginandsign/' + target)
+        return redirect('https://smp.maxbridgland.com/loginandsign/' + target)
 
 @app.route('/loginandsign/<target>')
 def loginandsign(target):
     if request.cookies.get('loginandsigntarget'):
-        res = make_response(redirect('https://smp.maxbridgland/loginandsign/' + target))
+        res = make_response(redirect('https://smp.maxbridgland.com/loginandsign/' + target))
         res.set_cookie('loginandsigntarget', '', 0)
         return res
     res = make_response(redirect('https://github.com/login/oauth/authorize?scope=read:user&client_id=0ea3c43634a76b9a4b7f'))
@@ -171,7 +171,7 @@ def index():
                 print(temp)
                 return render_template('index.html', username=user.username, badge=badge.format(amnt=user.signature_count), template=temp, gh_id=user.gh_id)
         else:
-            res = make_response(redirect('https://smp.maxbridgland/'))
+            res = make_response(redirect('https://smp.maxbridgland.com/'))
             res.set_cookie('auth_token', '', 0)
             return res
     else:
