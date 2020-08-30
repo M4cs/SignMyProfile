@@ -168,11 +168,20 @@ def index():
                     st = dt_utc.strftime("%Y-%m-%d %H:%M")
                     u = User.objects(id=sig.signee).first()
                     temp += TEMPLATE.format(username=u.username, display_name=u.display_name, user_image=u.avatar_url, time=st+" EST") + "<br>"
+                temp2 = ''
+                sigs2 = Signatures.objects(signee=user.id).all()
+                for sig in sigs:
+                    st = datetime.fromtimestamp(sig.time).strftime("%Y-%m-%d %H:%M")
+                    dt = datetime.strptime(st, "%Y-%m-%d %H:%M")
+                    dt_utc = dt.replace(tzinfo=pytz.timezone('America/New_York'))
+                    st = dt_utc.strftime("%Y-%m-%d %H:%M")
+                    u = User.objects(id=sig.signee).first()
+                    temp += TEMPLATE.format(username=u.username, display_name=u.display_name, user_image=u.avatar_url, time=st+" EST") + "<br>"
                 badge = "https://img.shields.io/badge/Signed%20By-{amnt}%20People-red"
                 if user.signature_count == 1:
                     badge = badge.replace('People', 'Person')
                 print(temp)
-                return render_template('index.html', username=user.username, badge=badge.format(amnt=user.signature_count), template=temp, gh_id=user.gh_id)
+                return render_template('index.html', username=user.username, badge=badge.format(amnt=user.signature_count), template=temp, gh_id=user.gh_id, template_again=temp2)
         else:
             res = make_response(redirect('https://smp.maxbridgland.com/', 302))
             res.set_cookie('auth_token', '', 0)
