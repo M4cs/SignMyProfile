@@ -66,7 +66,7 @@ def card(target):
     from app.models import User
     u = User.objects(gh_id=target).first()
     if u:
-        return redirect('/badge/' + u.signature_count)
+        return redirect('https://smp.maxbridgland.com/badge/' + u.signature_count)
     else:
         return 404
 
