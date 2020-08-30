@@ -54,17 +54,19 @@ TEMPLATE = '''\
             </a>
 '''
 
+@app.route('/badge/<amt>')
+def badge(amt):
+    if amt == 1:
+        api = 'https://img.shields.io/badge/Sign%20My%20Profile-{}%20Person%20Has-red'.format(amt)
+    else:
+        api = 'https://img.shields.io/badge/Sign%20My%20Profile-{}%20People%20Have-red'.format(amt)
+    return redirect(api, 302), 200
 @app.route('/card/<target>')
 def card(target):
     from app.models import User
-    api = 'https://img.shields.io/badge/Sign%20My%20Profile-{amt}%20People%20Have-red'
     u = User.objects(gh_id=target).first()
     if u:
-        if u.signature_count == 1:
-            api = api.replace('%20Person%20Has', '%20People%20Have')
-        res = requests.get(api.format(amt=u.signature_count)).content
-        r = Response(res, mimetype="image/svg+xml")
-        return r, 200
+        return redirect('/badge/' + u.signature_count)
     else:
         return 404
 
