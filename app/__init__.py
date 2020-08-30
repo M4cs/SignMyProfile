@@ -33,22 +33,24 @@ def callback_parser():
     return parser
 
 TEMPLATE = '''\
-            <div class="box">
-                <article class="media">
-                    <div class="media-left">
-                        <figure class="image is-64x64">
-                            <img src="{user_image}" alt="Image">
-                        </figure>
-                    </div>
-                    <div class="media-content">
-                        <div class="content">
-                            <p>
-                                <strong>{display_name}</strong><br><small>@{username}</small><br><small>{time}</small>
-                            </p>
+            <a href="https://github.com/{username}" target="_blank">
+                <div class="box">
+                    <article class="media">
+                        <div class="media-left">
+                            <figure class="image is-64x64">
+                                <img src="{user_image}" alt="Image">
+                            </figure>
                         </div>
-                    </div>
-                </article>
-            </div>
+                        <div class="media-content">
+                            <div class="content">
+                                <p>
+                                    <strong>{display_name}</strong><br><small>@{username}</small><br><small>{time}</small>
+                                </p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </a>
 '''
 
 @app.route('/card/<target>')
@@ -175,7 +177,7 @@ def index():
                     dt = datetime.strptime(st, "%Y-%m-%d %H:%M")
                     dt_utc = dt.replace(tzinfo=pytz.timezone('America/New_York'))
                     st = dt_utc.strftime("%Y-%m-%d %H:%M")
-                    u = User.objects(id=sig.signee).first()
+                    u = User.objects(id=sig.target).first()
                     temp2 += TEMPLATE.format(username=u.username, display_name=u.display_name, user_image=u.avatar_url, time=st+" EST") + "<br>"
                 badge = "https://img.shields.io/badge/Signed%20By-{amnt}%20People-red"
                 if user.signature_count == 1:
