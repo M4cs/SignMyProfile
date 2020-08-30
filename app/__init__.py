@@ -176,7 +176,7 @@ def index():
                     dt_utc = dt.replace(tzinfo=pytz.timezone('America/New_York'))
                     st = dt_utc.strftime("%Y-%m-%d %H:%M")
                     u = User.objects(id=sig.signee).first()
-                    temp += TEMPLATE.format(username=u.username, display_name=u.display_name, user_image=u.avatar_url, time=st+" EST") + "<br>"
+                    temp2 += TEMPLATE.format(username=u.username, display_name=u.display_name, user_image=u.avatar_url, time=st+" EST") + "<br>"
                 badge = "https://img.shields.io/badge/Signed%20By-{amnt}%20People-red"
                 if user.signature_count == 1:
                     badge = badge.replace('People', 'Person')
