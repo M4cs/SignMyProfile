@@ -130,8 +130,8 @@ def sign(target):
                         }
                         sign = Signatures(**new_sig)
                         sign.save()
-                        user.signature_count += 1
-                        user.save()
+                        tar.signature_count += 1
+                        tar.save()
                         return redirect('https://github.com/' + tar.username, 302)
                 else:
                     return redirect('https://github.com/' + tar.username)
