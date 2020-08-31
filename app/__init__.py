@@ -166,6 +166,7 @@ def loginandsign(target):
 
 @app.route('/home')
 def home():
+    from app.models import User, Signatures
     user = User.objects(github_oauth=request.cookies.get('auth_token')).first()
     if user:
         res = requests.get('https://api.github.com/user', headers={'Authorization': 'Bearer ' + request.cookies.get('auth_token'), 'accept': 'application/vnd.github.v3+json'})
@@ -203,7 +204,7 @@ def home():
 
 @app.route('/')
 def index():
-    from app.models import User, Signatures
+    from app.models import User
     if request.cookies.get('auth_token'):
         user = User.objects(github_oauth=request.cookies.get('auth_token')).first()
         if user:
