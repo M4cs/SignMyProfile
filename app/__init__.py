@@ -59,6 +59,16 @@ def badge_parser():
     parser.add_argument('target')
     return parser
 
+@app.route('/redir/<amt>')
+def img_redir(amt):
+    if amt == 1:
+        api = 'https://img.shields.io/badge/Sign%20My%20Profile-{}%20Person%20Has-red'.format(amt)
+    else:
+        api = 'https://img.shields.io/badge/Sign%20My%20Profile-{}%20People%20Have-red'.format(amt)
+    r = requests.get(api).content
+    res = Response(r, mimetype='image/svg+xml', headers={'Expires': 100})
+    return res, 200
+
 @app.route('/badge')
 def card():
     parser = badge_parser()
@@ -68,12 +78,7 @@ def card():
     u = User.objects(gh_id=target).first()
     if u:
         amt = u.signature_count
-        if amt == 1:
-            api = 'https://img.shields.io/badge/Sign%20My%20Profile-{}%20Person%20Has-red'.format(amt)
-        else:
-            api = 'https://img.shields.io/badge/Sign%20My%20Profile-{}%20People%20Have-red'.format(amt)
-        r = requests.get(api).content
-        res = Response(r, mimetype='image/svg+xml', headers={'ETag': target + str(u.signature_count), 'Expires': 100})
+        res = Response(redirect('https://smp.maxbridgland.com/redir/' + str(amt) + '?__random=' + str(uuid.uuid4())))
         return res, 200
     else:
         return 404
