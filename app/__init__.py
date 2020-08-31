@@ -7,6 +7,7 @@ from datetime import datetime
 import pytz
 import time
 from flask_restful import reqparse
+import uuid
 
 SCOPES = 'read:user'
 
@@ -60,7 +61,10 @@ def badge(amt):
         api = 'https://img.shields.io/badge/Sign%20My%20Profile-{}%20Person%20Has-red'.format(amt)
     else:
         api = 'https://img.shields.io/badge/Sign%20My%20Profile-{}%20People%20Have-red'.format(amt)
-    return redirect(api)
+    r = requests.get(api).content
+    res = Response(r, mimetype='image/svg+xml', headers={'ETag': str(uuid.uuid4())})
+    return res, 200
+    
 @app.route('/card/<target>')
 def card(target):
     from app.models import User
