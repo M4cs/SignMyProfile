@@ -164,6 +164,42 @@ def loginandsign(target):
     res.set_cookie('loginandsigntarget', target, 3600)
     return res
 
+@app.route('/home')
+def home():
+    user = User.objects(github_oauth=request.cookies.get('auth_token')).first()
+    if user:
+        res = requests.get('https://api.github.com/user', headers={'Authorization': 'Bearer ' + request.cookies.get('auth_token'), 'accept': 'application/vnd.github.v3+json'})
+        if res.status_code != 200:
+            resp = make_response(redirect('https://github.com/login/oauth/authorize?scope=read:user&client_id=0ea3c43634a76b9a4b7f'))
+            resp.set_cookie('auth_token', '', 0)
+            return resp
+        else:
+            temp = ''
+            user = User.objects(github_oauth=request.cookies.get('auth_token')).first()
+            sigs = Signatures.objects(target=user.id).all()
+            for sig in sigs:
+                st = datetime.fromtimestamp(sig.time).strftime("%Y-%m-%d %H:%M")
+                dt = datetime.strptime(st, "%Y-%m-%d %H:%M")
+                dt_utc = dt.replace(tzinfo=pytz.timezone('America/New_York'))
+                st = dt_utc.strftime("%Y-%m-%d %H:%M")
+                u = User.objects(id=sig.signee).first()
+                temp += TEMPLATE.format(username=Markup(u.username), display_name=Markup(u.display_name), user_image=u.avatar_url, time=st+" EST") + "<br>"
+            temp2 = ''
+            sigs2 = Signatures.objects(signee=user.id).all()
+            for sig in sigs2:
+                st = datetime.fromtimestamp(sig.time).strftime("%Y-%m-%d %H:%M")
+                dt = datetime.strptime(st, "%Y-%m-%d %H:%M")
+                dt_utc = dt.replace(tzinfo=pytz.timezone('America/New_York'))
+                st = dt_utc.strftime("%Y-%m-%d %H:%M")
+                u = User.objects(id=sig.target).first()
+                temp2 += TEMPLATE.format(username=Markup(u.username), display_name=Markup(u.display_name), user_image=u.avatar_url, time=st+" EST") + "<br>"
+            if user.signature_count == 1:
+                badge = badge.replace('People', 'Person')
+            return render_template('index.html', username=user.username, template=temp, gh_id=user.gh_id, template_again=temp2)
+    else:
+        res = make_response(redirect('https://smp.maxbridgland.com/'))
+        res.set_cookie('auth_token', '', 0)
+        return res
 
 @app.route('/')
 def index():
@@ -171,34 +207,7 @@ def index():
     if request.cookies.get('auth_token'):
         user = User.objects(github_oauth=request.cookies.get('auth_token')).first()
         if user:
-            res = requests.get('https://api.github.com/user', headers={'Authorization': 'Bearer ' + request.cookies.get('auth_token'), 'accept': 'application/vnd.github.v3+json'})
-            if res.status_code != 200:
-                resp = make_response(redirect('https://github.com/login/oauth/authorize?scope=read:user&client_id=0ea3c43634a76b9a4b7f'))
-                resp.set_cookie('auth_token', '', 0)
-                return resp
-            else:
-                temp = ''
-                user = User.objects(github_oauth=request.cookies.get('auth_token')).first()
-                sigs = Signatures.objects(target=user.id).all()
-                for sig in sigs:
-                    st = datetime.fromtimestamp(sig.time).strftime("%Y-%m-%d %H:%M")
-                    dt = datetime.strptime(st, "%Y-%m-%d %H:%M")
-                    dt_utc = dt.replace(tzinfo=pytz.timezone('America/New_York'))
-                    st = dt_utc.strftime("%Y-%m-%d %H:%M")
-                    u = User.objects(id=sig.signee).first()
-                    temp += TEMPLATE.format(username=Markup(u.username), display_name=Markup(u.display_name), user_image=u.avatar_url, time=st+" EST") + "<br>"
-                temp2 = ''
-                sigs2 = Signatures.objects(signee=user.id).all()
-                for sig in sigs2:
-                    st = datetime.fromtimestamp(sig.time).strftime("%Y-%m-%d %H:%M")
-                    dt = datetime.strptime(st, "%Y-%m-%d %H:%M")
-                    dt_utc = dt.replace(tzinfo=pytz.timezone('America/New_York'))
-                    st = dt_utc.strftime("%Y-%m-%d %H:%M")
-                    u = User.objects(id=sig.target).first()
-                    temp2 += TEMPLATE.format(username=Markup(u.username), display_name=Markup(u.display_name), user_image=u.avatar_url, time=st+" EST") + "<br>"
-                if user.signature_count == 1:
-                    badge = badge.replace('People', 'Person')
-                return render_template('index.html', username=user.username, template=temp, gh_id=user.gh_id, template_again=temp2)
+            return redirect('https://smp.maxbridgland.com/home')
         else:
             res = make_response(redirect('https://smp.maxbridgland.com/'))
             res.set_cookie('auth_token', '', 0)
