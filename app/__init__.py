@@ -60,7 +60,7 @@ def badge_parser():
     return parser
 
 @app.route('/badge')
-def card(target):
+def card():
     parser = badge_parser()
     args = parser.parse_args()
     target = args['target']
