@@ -78,7 +78,7 @@ def card():
     u = User.objects(gh_id=target).first()
     if u:
         amt = u.signature_count
-        return redirect('https://smp.maxbridgland.com/redir/' + str(amt) + '?__random=' + str(uuid.uuid4())), 200
+        return redirect('https://smp.maxbridgland.com/redir/' + str(amt) + '?__random=' + str(uuid.uuid4()))
     else:
         return 404
 
