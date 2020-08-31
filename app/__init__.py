@@ -173,9 +173,9 @@ def index():
         if user:
             res = requests.get('https://api.github.com/user', headers={'Authorization': 'Bearer ' + request.cookies.get('auth_token'), 'accept': 'application/vnd.github.v3+json'})
             if res.status_code != 200:
-                resp = make_response(redirect('https://github.com/login/oauth/authorize?scope=read:user&client_id=0ea3c43634a76b9a4b7f', 301))
+                resp = make_response(redirect('https://github.com/login/oauth/authorize?scope=read:user&client_id=0ea3c43634a76b9a4b7f'))
                 resp.set_cookie('auth_token', '', 0)
-                return resp, 200
+                return resp
             else:
                 temp = ''
                 user = User.objects(github_oauth=request.cookies.get('auth_token')).first()
@@ -200,8 +200,8 @@ def index():
                     badge = badge.replace('People', 'Person')
                 return render_template('index.html', username=user.username, template=temp, gh_id=user.gh_id, template_again=temp2)
         else:
-            res = make_response(redirect('https://smp.maxbridgland.com/', 302))
+            res = make_response(redirect('https://smp.maxbridgland.com/'))
             res.set_cookie('auth_token', '', 0)
             return res
     else:
-        return redirect('https://github.com/login/oauth/authorize?scope=read:user&client_id=0ea3c43634a76b9a4b7f', 302)
+        return render_template('main.html'), 200
