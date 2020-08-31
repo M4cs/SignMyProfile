@@ -54,10 +54,16 @@ TEMPLATE = '''\
                 </div>
             </a>
 '''
+def badge_parser():
+    parser = reqparse.RequestParser()
+    parser.add_argument('target')
+    return parser
 
-
-@app.route('/card/<target>')
+@app.route('/badge')
 def card(target):
+    parser = badge_parser()
+    args = parser.parse_args()
+    target = args['target']
     from app.models import User
     u = User.objects(gh_id=target).first()
     if u:
