@@ -67,7 +67,7 @@ def card(target):
         else:
             api = 'https://img.shields.io/badge/Sign%20My%20Profile-{}%20People%20Have-red'.format(amt)
         r = requests.get(api).content
-        res = Response(r, mimetype='image/svg+xml', headers={'ETag': str(uuid.uuid4())})
+        res = Response(r, mimetype='image/svg+xml', headers={'ETag': target + str(u.signature_count)})
         return res, 200
     else:
         return 404
