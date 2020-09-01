@@ -9,6 +9,10 @@ You can get a custom badge for your GitHub README from shields.io that displays 
 
 How the badge works:
 
+Example
+
+[![](https://smp.maxbridgland.com/badge?target=34947910)](https://smp.maxbridgland.com/sign/34947910)
+
 ```
 [![](https://smp.maxbridgland.com/badge?target=GITHUB USER ID)](https://smp.maxbridgland.com/sign/GITHUB USER ID)
 ```
