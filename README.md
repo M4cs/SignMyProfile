@@ -7,6 +7,14 @@ You can get a custom badge for your GitHub README from shields.io that displays 
 
 [Visit the SignMyProfile homepage here](https://smp.maxbridgland.com)
 
+How the badge works:
+
+```
+[![](https://smp.maxbridgland.com/badge?target=GITHUB USER ID)](https://smp.maxbridgland.com/sign/GITHUB USER ID)
+```
+
+You can go to https://smp.maxbridgland.com/ to get your badge!
+
 This uses Login with Github to get your Username, Avatar, and Display Name. It will use GitHub to authenticate and an OAuth2 token with **ONLY** user:read scope is generated. The tokens generated from SMP cannot modify/delete any data on your profile!
 
 # Development
